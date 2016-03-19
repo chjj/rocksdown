@@ -35,8 +35,8 @@ OpenWorker::OpenWorker (
 {
   rocksdb::LevelDBOptions ldb_opt;
 
-  // if (blockCache != NULL)
-  //   ldb_opt.block_cache = blockCache.get();
+  if (blockCache != NULL)
+    ldb_opt.block_cache = blockCache.get();
 
   ldb_opt.filter_policy = filterPolicy;
   ldb_opt.create_if_missing = createIfMissing;
@@ -44,8 +44,8 @@ OpenWorker::OpenWorker (
   ldb_opt.compression = compression
     ? rocksdb::kSnappyCompression
     : rocksdb::kNoCompression;
-  // ldb_opt.write_buffer_size = writeBufferSize;
-  // ldb_opt.block_size = blockSize;
+  ldb_opt.write_buffer_size = writeBufferSize;
+  ldb_opt.block_size = blockSize;
   ldb_opt.max_open_files = maxOpenFiles;
   ldb_opt.block_restart_interval = blockRestartInterval;
 
