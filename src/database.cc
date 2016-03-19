@@ -40,7 +40,8 @@ Database::~Database () {
 rocksdb::Status Database::OpenDatabase (
         rocksdb::Options* options
     ) {
-  return rocksdb::DB::Open(*options, **location, &db);
+  const std::string& loc = **location;
+  return rocksdb::DB::Open(*options, loc, &db);
 }
 
 rocksdb::Status Database::PutToDatabase (
@@ -115,7 +116,6 @@ void Database::CloseDatabase () {
   delete db;
   db = NULL;
   if (blockCache) {
-    delete blockCache;
     blockCache = NULL;
   }
   if (filterPolicy) {
@@ -181,6 +181,7 @@ NAN_METHOD(Database::Open) {
     , "writeBufferSize"
     , 4 << 20
   );
+  uint32_t memtableBudget = UInt32OptionValue(optionsObj, "memtableBudget", 512 << 20);
   uint32_t blockSize = UInt32OptionValue(optionsObj, "blockSize", 4096);
   uint32_t maxOpenFiles = UInt32OptionValue(optionsObj, "maxOpenFiles", 1000);
   uint32_t blockRestartInterval = UInt32OptionValue(
@@ -189,9 +190,9 @@ NAN_METHOD(Database::Open) {
     , 16
   );
 
-  // I don't know how c++11 smart pointers
-  // work, so I'm commenting this for now.
-  // database->blockCache = rocksdb::NewLRUCache(cacheSize);
+  database->blockCache = cacheSize != 0
+    ? rocksdb::NewLRUCache(cacheSize)
+    : NULL;
 
   database->filterPolicy = rocksdb::NewBloomFilterPolicy(10);
 
@@ -207,6 +208,7 @@ NAN_METHOD(Database::Open) {
     , blockSize
     , maxOpenFiles
     , blockRestartInterval
+    , memtableBudget
   );
   // persist to prevent accidental GC
   v8::Local<v8::Object> _this = info.This();

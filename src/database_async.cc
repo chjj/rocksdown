@@ -21,7 +21,7 @@ namespace leveldown {
 OpenWorker::OpenWorker (
     Database *database
   , Nan::Callback *callback
-  , rocksdb::Cache* blockCache
+  , std::shared_ptr<rocksdb::Cache> blockCache
   , const rocksdb::FilterPolicy* filterPolicy
   , bool createIfMissing
   , bool errorIfExists
@@ -30,24 +30,28 @@ OpenWorker::OpenWorker (
   , uint32_t blockSize
   , uint32_t maxOpenFiles
   , uint32_t blockRestartInterval
+  , uint32_t memtableBudget
 ) : AsyncWorker(database, callback)
 {
-  options = new rocksdb::Options();
+  rocksdb::LevelDBOptions ldb_opt;
 
-  // I don't know how c++11 smart pointers
-  // work, so I'm commenting this for now.
-  // options->block_cache            = blockCache;
+  // if (blockCache != NULL)
+  //   ldb_opt.block_cache = blockCache.get();
 
-  options->filter_policy          = filterPolicy;
-  options->create_if_missing      = createIfMissing;
-  options->error_if_exists        = errorIfExists;
-  options->compression            = compression
-      ? rocksdb::kSnappyCompression
-      : rocksdb::kNoCompression;
-  options->write_buffer_size      = writeBufferSize;
-  options->block_size             = blockSize;
-  options->max_open_files         = maxOpenFiles;
-  options->block_restart_interval = blockRestartInterval;
+  ldb_opt.filter_policy = filterPolicy;
+  ldb_opt.create_if_missing = createIfMissing;
+  ldb_opt.error_if_exists = errorIfExists;
+  ldb_opt.compression = compression
+    ? rocksdb::kSnappyCompression
+    : rocksdb::kNoCompression;
+  // ldb_opt.write_buffer_size = writeBufferSize;
+  // ldb_opt.block_size = blockSize;
+  ldb_opt.max_open_files = maxOpenFiles;
+  ldb_opt.block_restart_interval = blockRestartInterval;
+
+  options = new rocksdb::Options(rocksdb::ConvertOptions(ldb_opt));
+
+  // options->OptimizeLevelStyleCompaction(memtableBudget);
 };
 
 OpenWorker::~OpenWorker () {

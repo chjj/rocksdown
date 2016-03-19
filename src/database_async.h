@@ -10,6 +10,7 @@
 #include <node.h>
 
 #include <rocksdb/cache.h>
+#include <rocksdb/utilities/leveldb_options.h>
 
 #include "async.h"
 
@@ -20,7 +21,7 @@ public:
   OpenWorker (
       Database *database
     , Nan::Callback *callback
-    , rocksdb::Cache* blockCache
+    , std::shared_ptr<rocksdb::Cache> blockCache
     , const rocksdb::FilterPolicy* filterPolicy
     , bool createIfMissing
     , bool errorIfExists
@@ -29,6 +30,7 @@ public:
     , uint32_t blockSize
     , uint32_t maxOpenFiles
     , uint32_t blockRestartInterval
+    , uint32_t memtableBudget
   );
 
   virtual ~OpenWorker ();
