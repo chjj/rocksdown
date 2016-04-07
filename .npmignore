@@ -9,7 +9,7 @@ deps/snappy/snappy-1.1.1/testdata/
 leakydb
 bench/
 test/
-deps/leveldb/leveldb-1.17.0/doc/
+deps/rocksdb/rocksdb-4.4/doc/
 README
 INSTALL
 NEWS
