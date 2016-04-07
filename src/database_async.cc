@@ -56,8 +56,6 @@ OpenWorker::OpenWorker (
 
 OpenWorker::~OpenWorker () {
   delete options;
-  delete callback;
-  callback = NULL;
 }
 
 void OpenWorker::Execute () {
@@ -72,10 +70,7 @@ CloseWorker::CloseWorker (
 ) : AsyncWorker(database, callback)
 {};
 
-CloseWorker::~CloseWorker () {
-  delete callback;
-  callback = NULL;
-}
+CloseWorker::~CloseWorker () {}
 
 void CloseWorker::Execute () {
   database->CloseDatabase();
@@ -84,6 +79,8 @@ void CloseWorker::Execute () {
 void CloseWorker::WorkComplete () {
   Nan::HandleScope scope;
   HandleOKCallback();
+  delete callback;
+  callback = NULL;
 }
 
 /** IO WORKER (abstract) **/
@@ -131,8 +128,6 @@ ReadWorker::ReadWorker (
 
 ReadWorker::~ReadWorker () {
   delete options;
-  delete callback;
-  callback = NULL;
 }
 
 void ReadWorker::Execute () {
@@ -177,8 +172,6 @@ DeleteWorker::DeleteWorker (
 
 DeleteWorker::~DeleteWorker () {
   delete options;
-  delete callback;
-  callback = NULL;
 }
 
 void DeleteWorker::Execute () {
@@ -233,8 +226,6 @@ BatchWorker::BatchWorker (
 BatchWorker::~BatchWorker () {
   delete batch;
   delete options;
-  delete callback;
-  callback = NULL;
 }
 
 void BatchWorker::Execute () {
@@ -259,10 +250,7 @@ ApproximateSizeWorker::ApproximateSizeWorker (
   SaveToPersistent("end", endHandle);
 };
 
-ApproximateSizeWorker::~ApproximateSizeWorker () {
-  delete callback;
-  callback = NULL;
-}
+ApproximateSizeWorker::~ApproximateSizeWorker () {}
 
 void ApproximateSizeWorker::Execute () {
   size = database->ApproximateSizeFromDatabase(&range);

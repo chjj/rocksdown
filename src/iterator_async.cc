@@ -24,10 +24,7 @@ NextWorker::NextWorker (
   , localCallback(localCallback)
 {};
 
-NextWorker::~NextWorker () {
-  delete callback;
-  callback = NULL;
-}
+NextWorker::~NextWorker () {}
 
 void NextWorker::Execute () {
   ok = iterator->IteratorNext(result);
@@ -36,8 +33,6 @@ void NextWorker::Execute () {
 }
 
 void NextWorker::HandleOKCallback () {
-  Nan::HandleScope scope;
-
   size_t idx = 0;
 
   size_t arraySize = result.size() * 2;
@@ -90,10 +85,7 @@ EndWorker::EndWorker (
   , iterator(iterator)
 {};
 
-EndWorker::~EndWorker () {
-  delete callback;
-  callback = NULL;
-}
+EndWorker::~EndWorker () { }
 
 void EndWorker::Execute () {
   iterator->IteratorEnd();
