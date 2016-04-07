@@ -3,7 +3,7 @@
 
 // credit: https://groups.google.com/forum/#!msg/leveldb/VuECZMnsob4/F6pGPGaK-XwJ
 
-namespace leveldb {
+namespace rocksdb {
 namespace port {
 
 class AtomicPointer {
@@ -45,4 +45,4 @@ class AtomicPointer {
 };
 
 } // namespace port
-} // namespace leveldb
+} // namespace rocksdb
