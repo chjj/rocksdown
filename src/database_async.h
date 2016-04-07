@@ -30,7 +30,7 @@ public:
     , uint32_t blockSize
     , uint32_t maxOpenFiles
     , uint32_t blockRestartInterval
-    , uint32_t memtableBudget
+    , bool paranoidChecks
   );
 
   virtual ~OpenWorker ();

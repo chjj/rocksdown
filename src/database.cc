@@ -181,7 +181,6 @@ NAN_METHOD(Database::Open) {
     , "writeBufferSize"
     , 4 << 20
   );
-  uint32_t memtableBudget = UInt32OptionValue(optionsObj, "memtableBudget", 512 << 20);
   uint32_t blockSize = UInt32OptionValue(optionsObj, "blockSize", 4096);
   uint32_t maxOpenFiles = UInt32OptionValue(optionsObj, "maxOpenFiles", 1000);
   uint32_t blockRestartInterval = UInt32OptionValue(
@@ -189,12 +188,16 @@ NAN_METHOD(Database::Open) {
     , "blockRestartInterval"
     , 16
   );
+  uint32_t filterBits = UInt32OptionValue(optionsObj, "filterBits", 10);
+  bool paranoidChecks = BooleanOptionValue(optionsObj, "paranoidChecks", false);
 
   database->blockCache = cacheSize != 0
     ? rocksdb::NewLRUCache(cacheSize)
     : NULL;
 
-  database->filterPolicy = rocksdb::NewBloomFilterPolicy(10);
+  database->filterPolicy = filterBits != 0
+    ? rocksdb::NewBloomFilterPolicy(filterBits)
+    : NULL;
 
   OpenWorker* worker = new OpenWorker(
       database
@@ -208,7 +211,7 @@ NAN_METHOD(Database::Open) {
     , blockSize
     , maxOpenFiles
     , blockRestartInterval
-    , memtableBudget
+    , paranoidChecks
   );
   // persist to prevent accidental GC
   v8::Local<v8::Object> _this = info.This();

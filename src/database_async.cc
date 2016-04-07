@@ -30,7 +30,7 @@ OpenWorker::OpenWorker (
   , uint32_t blockSize
   , uint32_t maxOpenFiles
   , uint32_t blockRestartInterval
-  , uint32_t memtableBudget
+  , bool paranoidChecks
 ) : AsyncWorker(database, callback)
 {
   rocksdb::LevelDBOptions ldb_opt;
@@ -48,10 +48,9 @@ OpenWorker::OpenWorker (
   ldb_opt.block_size = blockSize;
   ldb_opt.max_open_files = maxOpenFiles;
   ldb_opt.block_restart_interval = blockRestartInterval;
+  ldb_opt.paranoid_checks = paranoidChecks;
 
   options = new rocksdb::Options(rocksdb::ConvertOptions(ldb_opt));
-
-  // options->OptimizeLevelStyleCompaction(memtableBudget);
 };
 
 OpenWorker::~OpenWorker () {
