@@ -11,6 +11,7 @@
 
 #include <rocksdb/cache.h>
 #include <rocksdb/utilities/leveldb_options.h>
+#include <rocksdb/env.h>
 
 #include "async.h"
 
@@ -21,6 +22,7 @@ public:
   OpenWorker (
       Database *database
     , Nan::Callback *callback
+    , rocksdb::Env* env
     , std::shared_ptr<rocksdb::Cache> blockCache
     , const rocksdb::FilterPolicy* filterPolicy
     , bool createIfMissing

@@ -12,6 +12,7 @@
 
 #include <rocksdb/utilities/leveldb_options.h>
 #include <rocksdb/db.h>
+#include <rocksdb/env.h>
 #include <rocksdb/filter_policy.h>
 #include <nan.h>
 
@@ -83,6 +84,7 @@ private:
   rocksdb::DB* db;
   uint32_t currentIteratorId;
   void(*pendingCloseWorker);
+  rocksdb::Env* env;
   std::shared_ptr<rocksdb::Cache> blockCache;
   const rocksdb::FilterPolicy* filterPolicy;
 
