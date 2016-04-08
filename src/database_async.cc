@@ -39,7 +39,8 @@ OpenWorker::OpenWorker (
   if (blockCache != NULL)
     ldb_opt.block_cache = blockCache.get();
 
-  ldb_opt.env = env;
+  if (env != NULL)
+    ldb_opt.env = env;
   ldb_opt.filter_policy = filterPolicy;
   ldb_opt.create_if_missing = createIfMissing;
   ldb_opt.error_if_exists = errorIfExists;
